@@ -15,6 +15,7 @@ specifiers:
   eslint-plugin-jsx-a11y: ^6.6.1
   eslint-plugin-n: ^15.6.0
   eslint-plugin-prettier: ^4.2.1
+  eslint-plugin-svelte3: ^4.0.0
   husky: ^8.0.2
   lint-staged: ^13.1.0
   nanostores: ^0.7.1
@@ -22,6 +23,7 @@ specifiers:
   postcss-html: ^1.5.0
   prettier: ^2.8.1
   prettier-plugin-astro: ^0.7.0
+  prettier-plugin-svelte: ^2.9.0
   stylelint: ^14.16.1
   stylelint-config-prettier: ^9.0.4
   stylelint-config-recommended: ^9.0.0
@@ -45,6 +47,7 @@ devDependencies:
   eslint-plugin-jsx-a11y: 6.6.1_eslint@8.30.0
   eslint-plugin-n: 15.6.0_eslint@8.30.0
   eslint-plugin-prettier: 4.2.1_kl4pe43v5b43npmso5hoplpbyi
+  eslint-plugin-svelte3: 4.0.0_khrjkzzv5v2x7orkj5o7sxbz3a
   husky: 8.0.2
   lint-staged: 13.1.0
   nanostores: 0.7.1
@@ -52,6 +55,7 @@ devDependencies:
   postcss-html: 1.5.0
   prettier: 2.8.1
   prettier-plugin-astro: 0.7.0
+  prettier-plugin-svelte: 2.9.0_ajxj753sv7dbwexjherrch25ta
   stylelint: 14.16.1
   stylelint-config-prettier: 9.0.4_stylelint@14.16.1
   stylelint-config-recommended: 9.0.0_stylelint@14.16.1
@@ -2236,6 +2240,16 @@ packages:
       eslint-config-prettier: 8.5.0_eslint@8.30.0
       prettier: 2.8.1
       prettier-linter-helpers: 1.0.0
+    dev: true
+
+  /eslint-plugin-svelte3/4.0.0_khrjkzzv5v2x7orkj5o7sxbz3a:
+    resolution: {integrity: sha512-OIx9lgaNzD02+MDFNLw0GEUbuovNcglg+wnd/UY0fbZmlQSz7GlQiQ1f+yX0XvC07XPcDOnFcichqI3xCwp71g==}
+    peerDependencies:
+      eslint: '>=8.0.0'
+      svelte: ^3.2.0
+    dependencies:
+      eslint: 8.30.0
+      svelte: 3.55.0
     dev: true
 
   /eslint-scope/5.1.1:
@@ -4592,6 +4606,16 @@ packages:
       prettier: 2.8.1
       sass-formatter: 0.7.5
       synckit: 0.8.4
+
+  /prettier-plugin-svelte/2.9.0_ajxj753sv7dbwexjherrch25ta:
+    resolution: {integrity: sha512-3doBi5NO4IVgaNPtwewvrgPpqAcvNv0NwJNflr76PIGgi9nf1oguQV1Hpdm9TI2ALIQVn/9iIwLpBO5UcD2Jiw==}
+    peerDependencies:
+      prettier: ^1.16.4 || ^2.0.0
+      svelte: ^3.2.0
+    dependencies:
+      prettier: 2.8.1
+      svelte: 3.55.0
+    dev: true
 
   /prettier/2.8.1:
     resolution: {integrity: sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==}

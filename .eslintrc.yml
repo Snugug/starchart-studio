@@ -11,6 +11,7 @@ extends:
 plugins:
   - import
   - prettier
+  - svelte3
   - '@typescript-eslint'
 env:
   browser: true
@@ -39,6 +40,9 @@ overrides:
       parser: '@typescript-eslint/parser'
       extraFileExtensions:
         - '*.astro'
+  - files:
+      - '*.svelte'
+    processor: svelte3/svelte3
 rules:
   n/no-missing-import: off
   n/no-unpublished-import: off
