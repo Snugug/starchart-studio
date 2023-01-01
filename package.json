@@ -56,7 +56,7 @@
     "svelte": "^3.46.4"
   },
   "peerDependencies": {
-    "@astrojs/mdx": "^0.12",
+    "@astrojs/mdx": "<1",
     "astro": "^1.0"
   },
   "engines": {
