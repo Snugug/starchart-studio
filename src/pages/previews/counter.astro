@@ -1,0 +1,30 @@
+---
+import Counter from '../../components/Counter.svelte';
+
+export interface Props {
+  start: number;
+}
+
+const { start } = Astro.props;
+---
+
+<Counter start={start} client:load />
+
+<script>
+  import { count } from '../../counterStore';
+  import { Starchart } from '@starchart/Starchart';
+
+  const starchart = new Starchart('counter');
+
+  starchart.onUpdate((data) => {
+    console.log(data);
+  });
+
+  starchart.onUpdateTo('count', (data) => {
+    count.set(Number(data));
+  });
+
+  count.subscribe((value) => {
+    starchart.send('count', value);
+  });
+</script>

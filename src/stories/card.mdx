@@ -1,0 +1,28 @@
+---
+title: Card
+---
+
+import Card from '../components/Card.astro';
+
+export const story = {
+  title: frontmatter.title,
+  component: Card,
+  load: 'client',
+  props: [
+    {
+      name: 'title',
+      type: 'text', // Any valid input type
+      default: 'Hello',
+      update(value, all) {
+        return value;
+      },
+    },
+  ],
+};
+
+This is a cute card that does cute things. You can use it like this:
+
+```js
+import Card from '../components/Card.astro';
+<Card title="Hello">
+```

@@ -1,0 +1,37 @@
+---
+title: Counter
+---
+
+import Counter from '../pages/previews/counter.astro';
+import counterStore from '../counterStore';
+
+export const story = {
+  title: frontmatter.title,
+  component: Counter,
+  preview: Counter,
+  props: [
+    {
+      name: 'start',
+      label: 'Start',
+      description: 'The number to start counting from',
+      type: 'number', // Any valid input type
+      default: 1,
+    },
+  ],
+  state: [
+    {
+      name: 'count',
+      label: 'Count',
+      description: 'The current count',
+      type: 'number', // Any valid input type
+      default: 1,
+    },
+  ],
+};
+
+This is a dynamic test! Watch how everything updates as you change the state.
+
+```js
+import Counter from '../components/Counter.svelte';
+<Counter start={1}>
+```

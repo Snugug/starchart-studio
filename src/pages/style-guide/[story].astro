@@ -1,0 +1,16 @@
+---
+import Starchart from '@starchart/Starchart.astro';
+import { StarchartStudio } from '@starchart';
+
+/**
+ * Builds static paths for stories
+ * @return {Promise<{params: Object, props: Object}[]>}
+ */
+export async function getStaticPaths() {
+  return StarchartStudio.getStaticPaths(Astro.glob('../../stories/*.mdx'));
+}
+
+const { chart, story } = StarchartStudio.chart(Astro);
+---
+
+<Starchart story={story} chart={chart} />
