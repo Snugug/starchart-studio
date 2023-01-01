@@ -2,7 +2,8 @@
   "name": "starchart-studio",
   "version": "0.2.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.ts",
   "scripts": {
     "dev": "astro dev",
     "pretest": "run-s lint",
@@ -22,7 +23,7 @@
     ".": "./index.ts",
     "./Starchart": "./Starchart.ts",
     "./Starchart.astro": "./Starchart.astro",
-    "./starchart/*": "./starchart/*"
+    "./components/*": "./starchart/*"
   },
   "keywords": [],
   "author": "",
