@@ -1,6 +1,7 @@
 root: true
 extends:
   - eslint:recommended
+  - plugin:@typescript-eslint/recommended
   - plugin:n/recommended
   - google
   - plugin:import/recommended
@@ -10,6 +11,7 @@ extends:
 plugins:
   - import
   - prettier
+  - '@typescript-eslint'
 env:
   browser: true
   node: true
@@ -17,7 +19,7 @@ env:
   es2017: true
   es2020: true
 parserOptions:
-  parser: babel-eslint
+  parser: '@typescript-eslint/parser'
   ecmaVersion: 2022
   sourceType: module
 settings:
@@ -39,3 +41,4 @@ overrides:
         - '*.astro'
 rules:
   n/no-missing-import: off
+  n/no-unpublished-import: off

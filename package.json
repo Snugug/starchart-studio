@@ -29,6 +29,7 @@
   "license": "MIT",
   "devDependencies": {
     "@astrojs/svelte": "^1.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",
     "eslint": "^8.30.0",
     "eslint-config-google": "^0.14.0",
@@ -61,7 +62,7 @@
   },
   "lint-staged": {
     "**/*.{svelte,astro}": "stylelint",
-    "**/*.{js,mjs,cjs,ts,astro,svelte}": "eslint",
+    "**/*.{js,mjs,cjs,ts,astro,svelte}": "eslint -c .eslintrc.yml",
     "**/*": "prettier --plugin-search-dir=. -c"
   }
 }
