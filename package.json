@@ -4,9 +4,64 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "astro dev",
+    "pretest": "run-s lint",
+    "test": "run-s build",
+    "prepare": "husky install ./.husky",
+    "lint": "run-p *:lint",
+    "lint:staged": "lint-staged",
+    "fix": "run-p *:fix",
+    "js:lint": "eslint --quiet .",
+    "js:fix": "eslint --fix .",
+    "prettier:lint": "prettier --plugin-search-dir=. -c .",
+    "prettier:fix": "prettier --plugin-search-dir=. --write .",
+    "css:lint": "stylelint \"**/*.{css,scss,astro}\"",
+    "css:fix": "stylelint --fix \"**/*.{css,scss,astro}\""
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./Starchart": "./Starchart.ts",
+    "./Starchart.astro": "./Starchart.astro",
+    "./starchart/*": "./starchart/*"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@astrojs/svelte": "^1.0.2",
+    "@typescript-eslint/parser": "^5.47.1",
+    "eslint": "^8.30.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-astro": "^0.21.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.2",
+    "lint-staged": "^13.1.0",
+    "nanostores": "^0.7.1",
+    "npm-run-all": "^4.1.5",
+    "postcss-html": "^1.5.0",
+    "prettier": "^2.8.1",
+    "prettier-plugin-astro": "^0.7.0",
+    "stylelint": "^14.16.1",
+    "stylelint-config-prettier": "^9.0.4",
+    "stylelint-config-recommended": "^9.0.0",
+    "stylelint-config-standard": "^29.0.0",
+    "svelte": "^3.46.4"
+  },
+  "peerDependencies": {
+    "@astrojs/mdx": "^0.12",
+    "astro": "^1.0"
+  },
+  "engines": {
+    "node": ">=18.12.0"
+  },
+  "lint-staged": {
+    "**/*.{svelte,astro}": "stylelint",
+    "**/*.{js,mjs,cjs,ts,astro,svelte}": "eslint",
+    "**/*": "prettier --plugin-search-dir=. -c"
+  }
 }

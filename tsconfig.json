@@ -1,0 +1,13 @@
+{
+  "extends": "astro/tsconfigs/base",
+  "compilerOptions": {
+    "importsNotUsedAsValues": "error",
+    "baseUrl": ".",
+    "paths": {
+      "@starchart": ["index.ts"],
+      "@starchart/Starchart": ["Starchart.ts"],
+      "@starchart/Starchart.astro": ["Starchart.astro"],
+      "@starchart/starchart/*": ["starchart/*"]
+    }
+  }
+}
