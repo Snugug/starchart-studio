@@ -1,0 +1,45 @@
+---
+import type { ComponentInstance } from 'astro/types';
+
+export interface Props {
+  Component: ComponentInstance;
+  props: object;
+  slug: string;
+}
+
+const { Component, props, slug } = Astro.props;
+
+const componentProps = props.props
+  .filter((prop) => Object.keys(prop).includes('default'))
+  .reduce((acc, prop) => {
+    acc[prop.name] = prop.default;
+    return acc;
+  }, {});
+---
+
+<Component {...componentProps} />
+
+<script define:vars={{ slug }}>
+  window.addEventListener(
+    'message',
+    (event) => {
+      if (event?.data?.from === 'starchart') {
+        window.dispatchEvent(
+          new CustomEvent('starchart:update', {
+            detail: {
+              component: slug.replace('__inline', ''),
+              props: event.data.props,
+            },
+          }),
+        );
+      }
+    },
+    false,
+  );
+</script>
+
+<style is:global>
+  body {
+    margin: 0;
+  }
+</style>

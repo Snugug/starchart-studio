@@ -1,0 +1,66 @@
+---
+import type { StarchartControl } from './StarchartControls.astro';
+
+export interface Props {
+  props: Array<StarchartControl>;
+}
+
+const { props } = Astro.props;
+---
+
+<fieldset class="starchart-props">
+  <h2>Props</h2>
+  {
+    props.map((control) => {
+      return (
+        <div class="form-group">
+          <label>
+            {control.label ? control.label + ' (' : ''}
+            <code>{control.name}</code>
+            {control.label ? ')' : ''}
+          </label>
+          <input
+            type={control.type}
+            value={control.default || ''}
+            name={'prop--' + control.name}
+            disabled
+          />
+          {control.description ? (
+            <p class="description">{control.description}</p>
+          ) : null}
+        </div>
+      );
+    })
+  }
+</fieldset>
+
+<style>
+  fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  div:has(> label) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  p {
+    font-size: 0.8rem;
+    color: #666666;
+    margin: 0;
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  label {
+    display: block;
+  }
+</style>

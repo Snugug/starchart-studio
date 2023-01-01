@@ -1,0 +1,102 @@
+---
+import type { StarchartControl } from './StarchartControls.astro';
+
+export interface Props {
+  controls: Array<StarchartControl>;
+  form?: string;
+  preview?: string;
+}
+
+const { controls, form, preview } = Astro.props;
+
+const f = form || '#control-form';
+const p = preview || '#starchart-preview';
+---
+
+<fieldset class="starchart-controls">
+  <h2>State</h2>
+  {
+    controls.map((control) => {
+      return (
+        <div class="form-group">
+          <label>
+            {control.label ? control.label + ' (' : ''}
+            <code>{control.name}</code>
+            {control.label ? ')' : ''}
+          </label>
+          <input
+            type={control.type}
+            value={control.default || ''}
+            name={control.name}
+          />
+          {control.description ? (
+            <p class="description">{control.description}</p>
+          ) : null}
+        </div>
+      );
+    })
+  }
+</fieldset>
+
+<style>
+  fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  div:has(> label) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  p {
+    font-size: 0.8rem;
+    color: #666666;
+    margin: 0;
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  label {
+    display: block;
+  }
+</style>
+
+<script define:vars={{ form: f, preview: p }}>
+  window.addEventListener('DOMContentLoaded', () => {
+    const controls = document.querySelector(form);
+    const iframe = document.querySelector(preview);
+
+    /**
+     * Send props to the inline component iFrame when changed
+     * @param {Event} e
+     */
+    function sendProps(e) {
+      e ? e.preventDefault() : null;
+      const data = new FormData(controls);
+      const json = Object.fromEntries(data);
+      iframe.contentWindow.postMessage(
+        { from: 'starchart', props: { ...json } },
+        window.location.origin,
+      );
+    }
+
+    controls.addEventListener('change', sendProps);
+    controls.addEventListener('submit', sendProps);
+
+    window.addEventListener('message', (e) => {
+      if (e?.data?.from === 'starchart') {
+        const { data } = e;
+        const input = controls.querySelector(`input[name="${data.prop}"]`);
+        input.value = data.value;
+      }
+    });
+  });
+</script>

@@ -1,0 +1,26 @@
+---
+export type StarchartNavItem = {
+  title: string;
+  url: string;
+};
+
+export interface Props {
+  chart: Array<StarchartNavItem>;
+}
+
+const { chart } = Astro.props;
+---
+
+<nav class="starchart-nav">
+  <ul class="starchart-nav--list">
+    {
+      chart.map((item) => (
+        <li class="starchart-nav--item">
+          <a href={item.url} class="starchart-nav--link">
+            {item.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

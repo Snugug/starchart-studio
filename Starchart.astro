@@ -1,0 +1,37 @@
+---
+import InlineStory from './starchart/InlineStory.astro';
+import BlockStory from './starchart/BlockStory.astro';
+
+import type { StarchartNavItem } from './starchart/StarchartNav.astro';
+import type { ComponentInstance } from 'astro/types';
+
+export type StarchartStory = {
+  slug: string;
+  Component: ComponentInstance;
+  properties: any;
+  inline: boolean;
+};
+
+export interface Props {
+  story: StarchartStory;
+  chart: Array<StarchartNavItem>;
+}
+
+const { story, chart } = Astro.props;
+---
+
+{
+  story.inline ? (
+    <InlineStory
+      Component={story.Component}
+      props={story.properties}
+      slug={story.slug}
+    />
+  ) : (
+    <BlockStory
+      Component={story.Component}
+      {...story.properties}
+      chart={chart}
+    />
+  )
+}

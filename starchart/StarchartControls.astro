@@ -1,0 +1,33 @@
+---
+import StarchartProps from './StarchartProps.astro';
+import StarchartState from './StarchartState.astro';
+
+export type StarchartControl = {
+  label: string;
+  name: string;
+  default: string;
+  description: string;
+  type: HTMLInputElement['type'];
+};
+
+export interface Props {
+  controls: Array<StarchartControl>;
+  props: Array<StarchartControl>;
+}
+
+const { props, controls } = Astro.props;
+---
+
+<form id="control-form">
+  {props.length > 0 ? <StarchartProps props={props} /> : null}
+
+  {controls.length > 0 ? <StarchartState controls={controls} /> : null}
+</form>
+
+<style>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+</style>
