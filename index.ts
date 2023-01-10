@@ -1,6 +1,6 @@
 import { basename } from 'path';
 
-import type { StarchartControl } from './starchart/StarchartControls.astro';
+import type { StarchartControl } from './src/starchart/StarchartControls.astro';
 import type { MDXInstance, ComponentFactory, AstroGlobal } from 'astro/types';
 
 export type StarchartStaticPath = {

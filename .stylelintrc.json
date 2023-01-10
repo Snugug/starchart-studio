@@ -3,7 +3,7 @@
   "ignoreFiles": ["node_modules/**/*", "dist/**/*", "public/**/*"],
   "customSyntax": "postcss-html",
   "rules": {
-    "indentation": 2,
+    "indentation": null,
     "string-quotes": "single",
     "no-duplicate-selectors": true,
     "color-hex-case": "lower",

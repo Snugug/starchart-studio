@@ -1,6 +1,10 @@
 public
 dist
-src
+src/components
+src/*.ts
+src/layouts
+src/pages
+src/stories
 astro.config.mjs
 tsconfig.json
 .*

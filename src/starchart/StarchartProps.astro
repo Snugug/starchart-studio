@@ -19,12 +19,18 @@ const { props } = Astro.props;
             <code>{control.name}</code>
             {control.label ? ')' : ''}
           </label>
-          <input
-            type={control.type}
-            value={control.default || ''}
-            name={'prop--' + control.name}
-            disabled
-          />
+          {control.type === 'object' ? (
+            <textarea name={'prop--' + control.name} disabled rows="5">
+              {JSON.stringify(control.default, null, 2)}
+            </textarea>
+          ) : (
+            <input
+              type={control.type}
+              value={control.default || ''}
+              name={'prop--' + control.name}
+              disabled
+            />
+          )}
           {control.description ? (
             <p class="description">{control.description}</p>
           ) : null}
@@ -42,6 +48,10 @@ const { props } = Astro.props;
     border: 0;
     padding: 0;
     margin: 0;
+  }
+
+  textarea {
+    font-family: monospace;
   }
 
   div:has(> label) {

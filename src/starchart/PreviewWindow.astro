@@ -9,19 +9,41 @@ const { src } = Astro.props;
 <div id="starchart-preview-window">
   <form id="starchart-preview--controls">
     <fieldset id="starchart-preview-controls--disabled-wrapper">
-      <input
-        type="number"
-        id="starchart-preview--width"
-        name="width"
-        value="300"
-        aria-label="Width, in px"
-      />
+      <div class="starchart-preview--control-group">
+        <label for="starchart-preview--width">w</label>
+        <input
+          type="number"
+          id="starchart-preview--width"
+          name="width"
+          value="300"
+          aria-label="Width, in px"
+        />
+      </div>
+      <div class="starchart-preview--control-group">
+        <label for="starchart-preview--height">h</label>
+        <input
+          type="number"
+          id="starchart-preview--width"
+          name="height"
+          value="300"
+          aria-label="Height, in px"
+        />
+      </div>
     </fieldset>
   </form>
   <div id="starchart-preview-container">
-    <button id="starchart-preview-resize" aria-label="resize"></button>
+    <button
+      id="starchart-preview-resize--h"
+      class="starchart-resizer"
+      aria-label="resize"></button>
+    <button
+      id="starchart-preview-resize--v"
+      class="starchart-resizer"
+      aria-label="resize"></button>
     <iframe id="starchart-preview" src={src}></iframe>
   </div>
+
+  <div id="starchart-cover"></div>
 </div>
 
 <style>
@@ -46,16 +68,71 @@ const { src } = Astro.props;
   #starchart-preview-container {
     display: grid;
     grid-template-columns: min-content 25px;
+    grid-template-rows: min-content 25px;
     height: 100%;
   }
 
-  #starchart-preview-resize {
+  #starchart-preview-controls--disabled-wrapper {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .starchart-preview--control-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .starchart-resizer {
+    --background: rgba(0, 0, 0, 0.15);
+    height: 100%;
+    width: 100%;
+    border: none;
+    background-image: linear-gradient(
+        to right,
+        var(--background),
+        transparent 10px,
+        transparent calc(100% - 10px),
+        var(--background) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--background),
+        transparent 10px,
+        transparent calc(100% - 10px),
+        var(--background) 100%
+      );
+    background-color: #efefef;
+    border-radius: 5px;
+    position: relative;
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .starchart-resizer::before {
+    --color: #000000;
+    content: '.';
+    color: var(--color);
+    text-shadow: 0 5px var(--color), 0 10px var(--color), 5px 0 var(--color),
+      5px 5px var(--color), 5px 10px var(--color), 10px 0 var(--color),
+      10px 5px var(--color), 10px 10px var(--color);
+    transform: translateX(-5px) translateY(-8px);
+  }
+
+  #starchart-preview-resize--h {
     grid-column: 2 / span 1;
     grid-row: 1;
-    height: 100%;
-    border: none;
-    background-color: #000000;
+
     cursor: ew-resize;
+  }
+
+  #starchart-preview-resize--v {
+    grid-column: 1 / span 1;
+    grid-row: 2;
+
+    cursor: ns-resize;
   }
 
   #starchart-preview {
@@ -66,7 +143,17 @@ const { src } = Astro.props;
   }
 
   #starchart-preview-window {
-    max-height: 100%;
+    height: 100%;
+  }
+
+  #starchart-cover {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 100;
+    display: none;
+    top: 0;
+    right: 0;
   }
 </style>
 
@@ -81,7 +168,7 @@ const { src } = Astro.props;
     const widthInput = document.querySelector('#starchart-preview--width');
 
     const iframe = document.querySelector('#starchart-preview');
-    const resizer = document.querySelector('#starchart-preview-resize');
+    const cover = document.querySelector('#starchart-cover');
     form.addEventListener('submit', resizeFromForm);
     form.addEventListener('input', resizeFromForm);
 
@@ -104,7 +191,7 @@ const { src } = Astro.props;
     const rs = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const cr = entry.contentRect;
-        iframe.style.height = cr.height + 'px';
+        iframe.style.height = cr.height - 25 + 'px';
         max = cr.width - 25;
         if (total > max) {
           total = max;
@@ -115,8 +202,9 @@ const { src } = Astro.props;
     rs.observe(parent);
 
     window.addEventListener('pointerdown', (e) => {
-      if (e.target.id === 'starchart-preview-resize') {
+      if (e.target.id === 'starchart-preview-resize--h') {
         resizing = true;
+        cover.style.display = 'block';
         resizeStart = e.clientX;
         initialSize = iframe.clientWidth;
         disabledWrapper.disabled = true;
@@ -137,16 +225,17 @@ const { src } = Astro.props;
         resizing = false;
         disabledWrapper.disabled = false;
         widthInput.value = Math.round(total);
+        cover.style.display = 'none';
       }
     });
 
-    resizer.addEventListener('pointerleave', () => {
-      if (resizing) {
-        resizing = false;
-        disabledWrapper.disabled = false;
-        widthInput.value = Math.round(total);
-      }
-    });
+    // resizer.addEventListener('pointerleave', () => {
+    //   if (resizing) {
+    //     resizing = false;
+    //     disabledWrapper.disabled = false;
+    //     widthInput.value = Math.round(total);
+    //   }
+    // });
 
     /**
      * Resize the iFrame from the form
