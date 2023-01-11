@@ -3,6 +3,8 @@ import StarchartPreview from './PreviewWindow.astro';
 import StarchartNav from './StarchartNav.astro';
 import StarchartControls from './StarchartControls.astro';
 
+import Rocket from './icons/rocket.svg?raw';
+
 import type { StarchartNavItem } from './StarchartNav.astro';
 import type { StarchartControl } from './StarchartControls.astro';
 import type { ComponentInstance } from 'astro/types';
@@ -19,7 +21,13 @@ const { title, Content, controls, props, chart } = Astro.props;
 ---
 
 <div class="starchart-story">
-  <div class="starchart-story--nav">
+  <div id="starchart-story--nav" aria-expanded="false">
+    <button
+      id="starchart-story--nav-toggle"
+      aria-controls="starchart-story--nav"
+      aria-label="Show story navigation"
+      set:html={Rocket}
+    />
     <StarchartNav chart={chart} />
   </div>
 
@@ -28,37 +36,113 @@ const { title, Content, controls, props, chart } = Astro.props;
     <div class="starchart-story--preview">
       <StarchartPreview src={`${Astro.url.pathname}__inline`} />
     </div>
-    <div>
+    <div class="starchart-story--inner-wrapper">
       <StarchartControls controls={controls} props={props} />
-    </div>
-    <div class="starchart-story--content">
-      <Content />
+      <div class="starchart-story--content">
+        <Content />
+      </div>
     </div>
   </div>
 </div>
 
 <style>
   .starchart-story {
-    display: grid;
-    grid-template-columns: 200px 3fr;
-    grid-gap: 1rem;
+    --toggle-size: 2.25rem;
     min-height: 100vh;
+    position: relative;
   }
 
-  .starchart-story--nav {
-    border-right: 1px solid #cccccc;
+  #starchart-story--nav {
+    box-sizing: border-box;
+    border: 1px solid #cccccc;
+
+    width: 200px;
+    position: fixed;
+    z-index: 10;
+    background: #ffffff;
+    transform: translateX(-200px);
+    transition: transform 0.2s ease-in-out;
+    height: 100vh;
+  }
+
+  #starchart-story--nav[aria-expanded='true'] {
+    transform: translateX(0);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  #starchart-story--nav-toggle {
+    border: 1px solid #cccccc;
+    border-left: 0;
+    background: #ffffff;
+    border-radius: 0 5px 5px 0;
+    height: var(--toggle-size);
+    width: var(--toggle-size);
+    position: absolute;
+    right: calc(var(--toggle-size) * -1);
+    top: -1px;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  #starchart-story--nav-toggle :global(svg) {
+    height: 100%;
+    width: 100%;
   }
 
   .starchart-story--story {
-    display: grid;
-    grid-template-columns: auto 300px;
-    grid-template-rows: min-content 50vh auto;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
   }
 
-  .starchart-story--title,
-  .starchart-story--content {
-    grid-column: 1 / -1;
+  .starchart-story--preview {
+    width: 100%;
+    height: 75vh;
+  }
+
+  .starchart-story--title {
+    text-align: center;
+    padding: 0 var(--toggle-size);
     margin: 0;
+    margin-top: 1rem;
+  }
+
+  .starchart-story--inner-wrapper {
+    display: grid;
+    gap: 1rem;
+    padding: 0 var(--toggle-size);
+  }
+
+  @media (min-width: 810px) {
+    .starchart-story--inner-wrapper {
+      grid-template-columns: auto 400px;
+    }
+
+    .starchart-story--content {
+      grid-column: 1 / span 1;
+      grid-row: 1;
+    }
   }
 </style>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.querySelector('#starchart-story--nav-toggle');
+
+    if (toggle) {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = e.target.closest('button');
+        const nav = target.closest('#starchart-story--nav');
+
+        if (nav.getAttribute('aria-expanded') === 'true') {
+          nav.setAttribute('aria-expanded', 'false');
+          target.setAttribute('aria-label', 'Show story navigation');
+        } else {
+          nav.setAttribute('aria-expanded', 'true');
+          target.setAttribute('aria-label', 'Hide story navigation');
+        }
+      });
+    }
+  });
+</script>
