@@ -134,3 +134,9 @@ This uses Astro's [script bundling](https://docs.astro.build/en/guides/client-si
 <video src="https://media.mas.to/masto-public/media_attachments/files/109/600/305/812/185/840/original/c1be52a89c8f86ac.mp4" role="button" tabindex="0" aria-label="Screen recording of Astro-powered story tool in action. Starts with a card component, shows what props are available for the component, a description of the component, and a preview of the component in an iFrame, which is shown being resized on drag. Next switches to a counter component that shows both props and state, which is updated as the component is changed and when the state form item is changed." title="Screen recording of Astro-powered story tool in action. Starts with a card component, shows what props are available for the component, a description of the component, and a preview of the component in an iFrame, which is shown being resized on drag. Next switches to a counter component that shows both props and state, which is updated as the component is changed and when the state form item is changed." loop="" autoplay="" playsinline="" style="position: static; top: 0px; left: 0px;"></video>
 
 Starchart will automatically build out the menu of components for you, hook up properties and send and listen for state changes, and render your stories into a nice display. It'll also create an isolated environment for each component preview that's resizable.
+
+## Acknowledgements
+
+Icons are from [Google Material Symbols](https://fonts.google.com/icons?icon.set=Material+Symbols) licensed under the Apache 2.0 license and modified to swap height and width for `viewBox`.
+
+Component resize area is heavily influenced by [ish.](https://github.com/bradfrost/ish.).

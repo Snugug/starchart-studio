@@ -1,4 +1,7 @@
 ---
+import Random from './icons/random.svg?raw';
+import Stretch from './icons/stretch.svg?raw';
+
 export interface Props {
   src: string;
 }
@@ -29,6 +32,35 @@ const { src } = Astro.props;
           aria-label="Height, in px"
         />
       </div>
+      <div id="starchart-preview--buttons">
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--small"
+          aria-label="Small">S</button
+        >
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--medium"
+          aria-label="Medium">M</button
+        >
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--large"
+          aria-label="Large">L</button
+        >
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--random"
+          aria-label="Random"
+          set:html={Random}
+        />
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--full"
+          aria-label="Full"
+          set:html={Stretch}
+        />
+      </div>
     </fieldset>
   </form>
   <div id="starchart-preview-container">
@@ -47,13 +79,16 @@ const { src } = Astro.props;
 </div>
 
 <style>
-  * {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
   #starchart-preview-window {
-    border: 1px solid rgb(0, 0, 0);
     height: 100%;
+    display: grid;
+    grid-template-rows: min-content 1fr;
   }
 
   fieldset {
@@ -74,13 +109,44 @@ const { src } = Astro.props;
     padding: 0;
   }
 
+  #starchart-preview--buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .starchart-preview--button {
+    height: 1.5rem;
+    width: 1.5rem;
+    padding: 0.25rem;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .starchart-preview--button :global(svg) {
+    height: 100%;
+    width: 100%;
+  }
+
   #starchart-preview-container {
+    --checkboard-color: #efefef;
     display: grid;
     grid-template-columns: min-content 25px;
     grid-template-rows: min-content 25px;
     height: 100%;
     overflow: hidden;
-    max-width: 100%;
+    width: 100%;
+    background-image: linear-gradient(
+        45deg,
+        var(--checkboard-color) 25%,
+        transparent 25%
+      ),
+      linear-gradient(-45deg, var(--checkboard-color) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--checkboard-color) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--checkboard-color) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
   }
 
   #starchart-preview-controls--disabled-wrapper {
@@ -117,7 +183,6 @@ const { src } = Astro.props;
     background-color: #efefef;
     border-radius: 5px;
     position: relative;
-    z-index: 101;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -140,6 +205,7 @@ const { src } = Astro.props;
         var(--pressed) calc(100% - 10px),
         var(--background) 100%
       );
+    z-index: 101;
   }
 
   .starchart-resizer::before {
@@ -201,6 +267,8 @@ const { src } = Astro.props;
     const widthInput = document.querySelector('#starchart-preview--width');
     const heightInput = document.querySelector('#starchart-preview--height');
 
+    const buttons = document.querySelectorAll('.starchart-preview--button');
+
     const iframe = document.querySelector('#starchart-preview');
     const container = document.querySelector('#starchart-preview-container');
     const cover = document.querySelector('#starchart-cover');
@@ -215,7 +283,7 @@ const { src } = Astro.props;
     let target;
     let delta;
     let totalX = parent.clientWidth - 25;
-    let totalY = parent.clientHeight - 50;
+    let totalY = parent.clientHeight - form.clientHeight - 25;
 
     // Set initial settings
     const min = 25;
@@ -225,9 +293,65 @@ const { src } = Astro.props;
     // Set initial size
     resize();
 
+    for (const button of buttons) {
+      button.addEventListener('click', buttonResize);
+    }
+
+    /**
+     * Resize the iFrame based on button click
+     * @param {ClickEvent} e - The click event
+     */
+    function buttonResize(e) {
+      e.preventDefault();
+      const id = e.target.closest('button').id.split('--')[1];
+
+      const intervalX = maxX / 3;
+      const intervalY = maxY / 3;
+
+      let x;
+      let y;
+
+      switch (id) {
+        case 'small':
+          x = Math.floor(Math.random() * (intervalX - min + 1)) + min;
+          y = Math.floor(Math.random() * (intervalY - min + 1)) + min;
+          break;
+        case 'medium':
+          x =
+            Math.floor(Math.random() * (intervalX * 2 - intervalX + 1)) +
+            intervalX;
+          y =
+            Math.floor(Math.random() * (intervalY * 2 - intervalY + 1)) +
+            intervalY;
+          break;
+        case 'large':
+          x =
+            Math.floor(Math.random() * (maxX - intervalX * 2 + 1)) +
+            intervalX * 2;
+          y =
+            Math.floor(Math.random() * (maxY - intervalY * 2 + 1)) +
+            intervalY * 2;
+          break;
+        case 'random':
+          x = Math.floor(Math.random() * (maxX - min + 1)) + min;
+          y = Math.floor(Math.random() * (maxY - min + 1)) + min;
+          break;
+        case 'full':
+          x = maxX;
+          y = maxY;
+          break;
+      }
+
+      if (x && y) {
+        totalX = x;
+        totalY = y;
+        resize(x, y);
+      }
+    }
+
     window.addEventListener('resize', () => {
       maxX = parent.clientWidth - 25;
-      maxY = parent.clientHeight - 50;
+      maxY = parent.clientHeight - form.clientHeight - 25;
 
       container.style.display = 'none';
       resize(25, 25);
