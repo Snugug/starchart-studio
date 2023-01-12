@@ -1,21 +1,27 @@
----
-title: Card
----
-
 import Card from '../components/Card.astro';
 
 export const story = {
-  title: frontmatter.title,
+  title: 'Card',
   component: Card,
-  load: 'client',
-  props: [
+  variants: [
     {
-      name: 'title',
-      type: 'text', // Any valid input type
-      default: 'Hello',
-      update(value, all) {
-        return value;
-      },
+      props: [
+        {
+          name: 'title',
+          type: 'text', // Any valid input type
+          default: 'Steve',
+        },
+      ],
+    },
+    {
+      title: 'World',
+      props: [
+        {
+          name: 'title',
+          type: 'text', // Any valid input type
+          default: 'World',
+        },
+      ],
     },
   ],
 };

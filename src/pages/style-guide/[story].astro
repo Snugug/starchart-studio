@@ -10,7 +10,7 @@ export async function getStaticPaths() {
   return StarchartStudio.getStaticPaths(Astro.glob('../../stories/*.mdx'));
 }
 
-const { chart, story } = StarchartStudio.chart(Astro);
+const starchart = StarchartStudio.chart(Astro);
 ---
 
-<Starchart story={story} chart={chart} />
+<Starchart {...starchart} />

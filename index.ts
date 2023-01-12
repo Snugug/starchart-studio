@@ -20,6 +20,7 @@ export type StarchartStaticPath = {
  */
 class Studio {
   _stories: Array<StarchartStaticPath>;
+  _vnav: Array<any>;
 
   /**
    * Builds Starchart static paths
@@ -29,25 +30,69 @@ class Studio {
   async getStaticPaths(glob: Promise<MDXInstance[]>) {
     const stories = await glob;
 
-    const paths = stories.map((story) => [
-      {
-        params: {
-          story: basename(story.file, '.mdx'),
-        },
-        props: {
-          title: story.story.title,
-          Content: story.Content,
-          controls: story.story.state || [],
-          props: story.story.props || [],
-        },
-      },
-      {
-        params: {
-          story: `${basename(story.file, '.mdx')}__inline`,
-        },
-        props: { ...story.story },
-      },
-    ]);
+    const vnav = {
+      key: {},
+      siblings: {},
+      stories: [],
+    };
+
+    const paths = stories.map((story) => {
+      const variants = story.story.variants
+        .map((variant, i) => {
+          const suffix = i !== 0 ? `__variant-${i}` : '';
+          const base = {
+            title: story.story.title,
+            variant:
+              i !== 0 ? variant.title || `variant-${i}` : variant.title || '',
+          };
+
+          const keyBase = basename(story.file, '.mdx');
+          const key = keyBase + suffix;
+
+          if (i === 0) {
+            vnav.siblings[keyBase] = [];
+            vnav.stories.push(keyBase);
+          }
+
+          vnav.key[key] = keyBase;
+          vnav.siblings[keyBase].push({
+            title: base.title,
+            variant: base.variant,
+            url: key,
+          });
+
+          const v = [
+            {
+              params: {
+                story: key,
+              },
+              props: {
+                ...base,
+                Content: story.Content,
+                controls: variant.state || [],
+                props: variant.props || [],
+              },
+            },
+            {
+              params: {
+                story: `${key}__inline`,
+              },
+              props: {
+                ...base,
+                component: story.story.component,
+                props: variant.props,
+                state: variant.state,
+              },
+            },
+          ];
+          return v;
+        })
+        .flat();
+
+      return variants;
+    });
+
+    this._vnav = vnav;
 
     this._stories = paths.flat();
 
@@ -63,6 +108,7 @@ class Studio {
     const { story: slug } = Astro.params;
     const {
       component: Component,
+      variant: subtitle,
       title,
       Content,
       controls,
@@ -79,18 +125,38 @@ class Studio {
       throw new Error('Could not find story');
     }
     base = pathname.replace(new RegExp(base + '$'), '[story]');
+
     const chart = this._stories
       .filter((s) => !s.params.story.endsWith('__inline'))
-      .map((story) => ({
-        title: story.props.title,
-        url: base?.replace('[story]', story.params.story),
-      }));
+      .map((story) => {
+        const key = this._vnav.key[story.params.story];
+        const variants = this._vnav.siblings[key];
+        if (variants.length > 1) {
+          return {
+            title: variants[0].title,
+            url: variants[0].url,
+            variants,
+          };
+        }
+
+        return variants[0];
+      })
+      .filter((v, i, a) => a.findIndex((t) => t.url === v.url) === i);
 
     const inline = slug.endsWith('__inline');
 
     const properties = inline
       ? Astro.props
-      : { title, Content, slug, controls, stories, url: Astro.url, props };
+      : {
+          title,
+          subtitle,
+          Content,
+          slug,
+          controls,
+          stories,
+          url: Astro.url,
+          props,
+        };
 
     return {
       story: {
