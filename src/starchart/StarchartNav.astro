@@ -1,0 +1,176 @@
+---
+import Rocket from './icons/rocket.svg?raw';
+
+export type StarchartNavItem = {
+  title: string;
+  url: string;
+};
+
+export interface Props {
+  chart: Array<StarchartNavItem>;
+}
+
+const { chart } = Astro.props;
+---
+
+<div id="starchart-nav" aria-expanded="false">
+  <button
+    id="starchart-nav--toggle"
+    aria-controls="starchart-nav"
+    aria-label="Show story navigation"
+    set:html={Rocket}
+  />
+  <nav id="starchart-nav--container">
+    <ul class="starchart-nav--list">
+      {
+        chart.map((item) => (
+          <li class="starchart-nav--item">
+            <a
+              href={item.url}
+              class="starchart-nav--link"
+              data-active={Astro.url.pathname.endsWith(item.url)}
+            >
+              {item.title}
+            </a>
+            {item.variants && (
+              <ul class="starchart-nav--variants">
+                {item.variants.map(
+                  (variant, i) =>
+                    i !== 0 && (
+                      <li class="starchart-nav--variant">
+                        <a
+                          href={variant.url}
+                          class="starchart-nav--link"
+                          data-active={Astro.url.pathname.endsWith(variant.url)}
+                        >
+                          {variant.variant}
+                        </a>
+                      </li>
+                    ),
+                )}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>
+
+<style>
+  #starchart-nav {
+    box-sizing: border-box;
+    border: 1px solid #cccccc;
+
+    width: 200px;
+    position: fixed;
+    z-index: 10;
+    background: #ffffff;
+    transform: translateX(-200px);
+    transition: transform 0.2s ease-in-out;
+    height: 100vh;
+  }
+
+  #starchart-nav[data-instant] {
+    transition: none;
+  }
+
+  #starchart-nav[aria-expanded='true'],
+  #starchart-nav:has(.starchart-nav--link:focus) {
+    transform: translateX(0);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  #starchart-nav--container {
+    box-sizing: border-box;
+    border: none;
+    padding: 0.5rem 1rem;
+    overflow: auto;
+    height: 100%;
+    width: 100%;
+  }
+
+  #starchart-nav--toggle {
+    border: 1px solid #cccccc;
+    border-left: 0;
+    background: #ffffff;
+    border-radius: 0 5px 5px 0;
+    height: var(--toggle-size);
+    width: var(--toggle-size);
+    position: absolute;
+    right: calc(var(--toggle-size) * -1);
+    top: -1px;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  #starchart-nav--toggle :global(svg) {
+    height: 100%;
+    width: 100%;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .starchart-nav--link {
+    box-sizing: border-box;
+    width: 100%;
+    display: block;
+    color: #000000;
+    padding: 0.25rem;
+  }
+
+  .starchart-nav--variants .starchart-nav--link {
+    padding-left: 1.25rem;
+  }
+
+  .starchart-nav--link[data-active] {
+    background: #eeeeee;
+  }
+</style>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.querySelector('#starchart-nav--toggle');
+    const nav = document.querySelector('#starchart-nav');
+
+    if (window.localStorage) {
+      const expanded = window.localStorage.getItem('starchart-nav') === 'true';
+
+      if (expanded) {
+        nav.setAttribute('data-instant', 'true');
+        toggleNav();
+        requestAnimationFrame(() => {
+          nav.removeAttribute('data-instant');
+        });
+      }
+    }
+
+    /**
+     * Toggle the navigation open or closed
+     */
+    function toggleNav() {
+      const expanded = nav.getAttribute('aria-expanded') === 'true';
+      nav.setAttribute('aria-expanded', `${!expanded}`);
+      const action = expanded ? 'Show' : 'Hide';
+      const opposite = !expanded ? 'Show' : 'Hide';
+      const label = toggle.getAttribute('aria-label').replace(opposite, action);
+      toggle.setAttribute('aria-label', label);
+      if (window.localStorage) {
+        window.localStorage.setItem('starchart-nav', `${!expanded}`);
+      }
+    }
+
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        toggleNav();
+      });
+    }
+  });
+</script>

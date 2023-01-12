@@ -9,22 +9,26 @@ export const story = {
   title: frontmatter.title,
   component: Counter,
   preview: Counter,
-  props: [
+  variants: [
     {
-      name: 'start',
-      label: 'Start',
-      description: 'The number to start counting from',
-      type: 'number', // Any valid input type
-      default: 1,
-    },
-  ],
-  state: [
-    {
-      name: 'count',
-      label: 'Count',
-      description: 'The current count',
-      type: 'number', // Any valid input type
-      default: 1,
+      props: [
+        {
+          name: 'start',
+          label: 'Start',
+          description: 'The number to start counting from',
+          type: 'number', // Any valid input type
+          default: 1,
+        },
+      ],
+      state: [
+        {
+          name: 'count',
+          label: 'Count',
+          description: 'The current count',
+          type: 'number', // Any valid input type
+          default: 1,
+        },
+      ],
     },
   ],
 };

@@ -4,6 +4,14 @@ Starchart Studio is a tool to create component stories, similar to [Storybook](h
 
 **This is a preview release!** It's enough to get going with but the UX and DX still needs some work. If you wanna help, please file an issue and we can chat!
 
+Current features:
+
+- MDX powered stories
+- Static props and dynamic events
+- Variants
+- Isolated, resizable component preview area
+- Minimalist styling
+
 ## Get started
 
 Start by installing [Astro MDX ](https://docs.astro.build/en/guides/integrations-guide/mdx/), then install this module:
@@ -20,25 +28,30 @@ import Card from '../components/Card.astro';
 export const story = {
   title: 'Card',
   component: Card,
-  props: [
+  variants: [
     {
-      name: 'title',
-      type: 'text',
-      default: 'Card Title',
-      description: 'The title of the card',
-    },
-    {
-      name: 'body',
-      type: 'text',
-      default: 'Card Body',
-      description: 'The body of the card',
-    },
-    {
-      name: 'href',
-      type: 'url',
-      default: 'https://example.com',
-    },
-  ],
+      props: [
+        {
+          name: 'title',
+          type: 'text',
+          default: 'Card Title',
+          description: 'The title of the card',
+        },
+        {
+          name: 'body',
+          type: 'text',
+          default: 'Card Body',
+          description: 'The body of the card',
+        },
+        {
+          name: 'href',
+          type: 'url',
+          default: 'https://example.com',
+        },
+      ],
+    }
+  ]
+
 };
 
 This is Astro's default card component! It's a list item that links to a URL and has a title and body text.
@@ -48,8 +61,10 @@ Your story needs to export a `story` object with the following properties:
 
 - `title` - The title of your story
 - `component` - The imported component for your story.
-- `props` (optional) - The properties to pass to your component. Each property needs a `name` (the property name) and a `type` that corresponds to an HTML input type. It can also optionally have a `default` which will be passed in, a `description` of the property, and a `label` to describe the property. Properties get passed in at render time, so cannot be changed once rendered.
-- `state` (optional) - State that affects your component. State and props share a structure. Hooking up state is a little more complex and is covered below.
+- `variants` - The different variants for this components, an array of objects containing the following:
+  - `title` (optional) - The title of a variant
+  - `props` (optional) - The properties to pass to your component. Each property needs a `name` (the property name) and a `type` that corresponds to an HTML input type. It can also optionally have a `default` which will be passed in, a `description` of the property, and a `label` to describe the property. Properties get passed in at render time, so cannot be changed once rendered.
+  - `state` (optional) - State that affects your component. State and props share a structure. Hooking up state is a little more complex and is covered below.
 
 Next, create a page (in your Astro `src/pages` directory) to generate the stories in. It can be in whatever folder structure or filename you want, as long as the filename ends in `[story]` for each story to be properly generated (for instance `style-guide/[story].astro`, `stories-[story].astro`). The generated page will replace `[story]` with the filename (minus `.mdx`) of your story. Right now, we recommend a flat folder structure in your stories directory. Once that file is created, add the following to it:
 
@@ -134,3 +149,9 @@ This uses Astro's [script bundling](https://docs.astro.build/en/guides/client-si
 <video src="https://media.mas.to/masto-public/media_attachments/files/109/600/305/812/185/840/original/c1be52a89c8f86ac.mp4" role="button" tabindex="0" aria-label="Screen recording of Astro-powered story tool in action. Starts with a card component, shows what props are available for the component, a description of the component, and a preview of the component in an iFrame, which is shown being resized on drag. Next switches to a counter component that shows both props and state, which is updated as the component is changed and when the state form item is changed." title="Screen recording of Astro-powered story tool in action. Starts with a card component, shows what props are available for the component, a description of the component, and a preview of the component in an iFrame, which is shown being resized on drag. Next switches to a counter component that shows both props and state, which is updated as the component is changed and when the state form item is changed." loop="" autoplay="" playsinline="" style="position: static; top: 0px; left: 0px;"></video>
 
 Starchart will automatically build out the menu of components for you, hook up properties and send and listen for state changes, and render your stories into a nice display. It'll also create an isolated environment for each component preview that's resizable.
+
+## Acknowledgements
+
+Icons are from [Google Material Symbols](https://fonts.google.com/icons?icon.set=Material+Symbols) licensed under the Apache 2.0 license and modified to swap height and width for `viewBox`.
+
+Component resize area is heavily influenced by [ish.](https://github.com/bradfrost/ish.).

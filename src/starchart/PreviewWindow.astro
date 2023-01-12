@@ -1,0 +1,449 @@
+---
+import Random from './icons/random.svg?raw';
+import Stretch from './icons/stretch.svg?raw';
+
+export interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+---
+
+<div id="starchart-preview-window">
+  <form id="starchart-preview--controls">
+    <fieldset id="starchart-preview-controls--disabled-wrapper">
+      <div class="starchart-preview--control-group">
+        <label for="starchart-preview--width">w</label>
+        <input
+          type="number"
+          id="starchart-preview--width"
+          name="width"
+          value="300"
+          aria-label="Width, in px"
+        />
+      </div>
+      <div class="starchart-preview--control-group">
+        <label for="starchart-preview--height">h</label>
+        <input
+          type="number"
+          id="starchart-preview--height"
+          name="height"
+          value="300"
+          aria-label="Height, in px"
+        />
+      </div>
+      <div id="starchart-preview--buttons">
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--small"
+          aria-label="Small">S</button
+        >
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--medium"
+          aria-label="Medium">M</button
+        >
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--large"
+          aria-label="Large">L</button
+        >
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--random"
+          aria-label="Random"
+          set:html={Random}
+        />
+        <button
+          class="starchart-preview--button"
+          id="starchart-preview--full"
+          aria-label="Full"
+          set:html={Stretch}
+        />
+      </div>
+    </fieldset>
+  </form>
+  <div id="starchart-preview-container">
+    <button
+      id="starchart-preview-resize--h"
+      class="starchart-resizer"
+      aria-label="resize"></button>
+    <button
+      id="starchart-preview-resize--v"
+      class="starchart-resizer"
+      aria-label="resize"></button>
+    <iframe id="starchart-preview" src={src}></iframe>
+  </div>
+
+  <div id="starchart-cover"></div>
+</div>
+
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  #starchart-preview-window {
+    height: 100%;
+    display: grid;
+    grid-template-rows: min-content 1fr;
+  }
+
+  fieldset {
+    border: none;
+    padding: 0.25rem 0.5rem;
+    margin: 0;
+    background-color: #cccccc;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  input {
+    border: 0;
+    margin: 0;
+    text-align: right;
+    width: 4rem;
+    padding: 0;
+  }
+
+  #starchart-preview--buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .starchart-preview--button {
+    height: 1.5rem;
+    width: 1.5rem;
+    padding: 0.25rem;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .starchart-preview--button :global(svg) {
+    height: 100%;
+    width: 100%;
+  }
+
+  #starchart-preview-container {
+    --checkboard-color: #efefef;
+    display: grid;
+    grid-template-columns: min-content 25px;
+    grid-template-rows: min-content 25px;
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+    background-image: linear-gradient(
+        45deg,
+        var(--checkboard-color) 25%,
+        transparent 25%
+      ),
+      linear-gradient(-45deg, var(--checkboard-color) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--checkboard-color) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--checkboard-color) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  }
+
+  #starchart-preview-controls--disabled-wrapper {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .starchart-preview--control-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .starchart-resizer {
+    --background: rgba(0, 0, 0, 0.15);
+    --pressed: rgba(0, 0, 0, 0.05);
+    --color: rgba(0, 0, 0, 1);
+    height: 100%;
+    width: 100%;
+    border: none;
+    background-image: linear-gradient(
+        to right,
+        var(--background),
+        transparent 10px,
+        transparent calc(100% - 10px),
+        var(--background) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--background),
+        transparent 10px,
+        transparent calc(100% - 10px),
+        var(--background) 100%
+      );
+    background-color: #efefef;
+    border-radius: 5px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pressed {
+    --color: rgba(0, 0, 0, 0.5);
+    background-image: linear-gradient(
+        to right,
+        var(--background),
+        var(--pressed) 10px,
+        var(--pressed) calc(100% - 10px),
+        var(--background) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--background),
+        var(--pressed) 10px,
+        var(--pressed) calc(100% - 10px),
+        var(--background) 100%
+      );
+    z-index: 101;
+  }
+
+  .starchart-resizer::before {
+    content: '.';
+    color: var(--color);
+    text-shadow: 5px 0 var(--color), 10px 0 var(--color), 0 5px var(--color),
+      5px 5px var(--color), 10px 5px var(--color);
+  }
+
+  #starchart-preview-resize--h {
+    grid-column: 2 / span 1;
+    grid-row: 1;
+    cursor: ew-resize;
+    touch-action: none;
+  }
+
+  #starchart-preview-resize--h::before {
+    transform: translateX(-5px) translateY(-6px);
+  }
+
+  #starchart-preview-resize--v {
+    grid-column: 1 / span 1;
+    grid-row: 2;
+    cursor: ns-resize;
+    touch-action: none;
+  }
+
+  #starchart-preview-resize--v::before {
+    transform: translateX(5px) translateY(-5px) rotate(90deg);
+  }
+
+  #starchart-preview {
+    grid-column: 1 / span 1;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #starchart-cover {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 100;
+    display: none;
+    top: 0;
+    right: 0;
+    touch-action: none;
+  }
+</style>
+
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    const parent = document.querySelector('#starchart-preview-window');
+
+    const form = document.querySelector('#starchart-preview--controls');
+    const disabledWrapper = document.querySelector(
+      '#starchart-preview-controls--disabled-wrapper',
+    );
+    const widthInput = document.querySelector('#starchart-preview--width');
+    const heightInput = document.querySelector('#starchart-preview--height');
+
+    const buttons = document.querySelectorAll('.starchart-preview--button');
+
+    const iframe = document.querySelector('#starchart-preview');
+    const container = document.querySelector('#starchart-preview-container');
+    const cover = document.querySelector('#starchart-cover');
+    form.addEventListener('submit', resizeFromForm);
+    form.addEventListener('input', resizeFromForm);
+
+    // Set up holders
+    let resizing = false;
+    let direction;
+    let resizeStart;
+    let initialSize;
+    let target;
+    let delta;
+    let totalX = parent.clientWidth - 25;
+    let totalY = parent.clientHeight - form.clientHeight - 25;
+
+    // Set initial settings
+    const min = 25;
+    let maxX = totalX;
+    let maxY = totalY;
+
+    // Set initial size
+    resize();
+
+    for (const button of buttons) {
+      button.addEventListener('click', buttonResize);
+    }
+
+    /**
+     * Resize the iFrame based on button click
+     * @param {ClickEvent} e - The click event
+     */
+    function buttonResize(e) {
+      e.preventDefault();
+      const id = e.target.closest('button').id.split('--')[1];
+
+      const intervalX = maxX / 3;
+      const intervalY = maxY / 3;
+
+      let x;
+      let y;
+
+      switch (id) {
+        case 'small':
+          x = Math.floor(Math.random() * (intervalX - min + 1)) + min;
+          y = Math.floor(Math.random() * (intervalY - min + 1)) + min;
+          break;
+        case 'medium':
+          x =
+            Math.floor(Math.random() * (intervalX * 2 - intervalX + 1)) +
+            intervalX;
+          y =
+            Math.floor(Math.random() * (intervalY * 2 - intervalY + 1)) +
+            intervalY;
+          break;
+        case 'large':
+          x =
+            Math.floor(Math.random() * (maxX - intervalX * 2 + 1)) +
+            intervalX * 2;
+          y =
+            Math.floor(Math.random() * (maxY - intervalY * 2 + 1)) +
+            intervalY * 2;
+          break;
+        case 'random':
+          x = Math.floor(Math.random() * (maxX - min + 1)) + min;
+          y = Math.floor(Math.random() * (maxY - min + 1)) + min;
+          break;
+        case 'full':
+          x = maxX;
+          y = maxY;
+          break;
+      }
+
+      if (x && y) {
+        totalX = x;
+        totalY = y;
+        resize(x, y);
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      maxX = parent.clientWidth - 25;
+      maxY = parent.clientHeight - form.clientHeight - 25;
+
+      container.style.display = 'none';
+      resize(25, 25);
+
+      setTimeout(() => {
+        container.style.display = 'grid';
+        resize();
+      }, 100);
+    });
+
+    window.addEventListener('pointerdown', (e) => {
+      const id = e.target.id;
+      if (id.startsWith('starchart-preview-resize')) {
+        target = e.target;
+        target.classList.toggle('pressed');
+        resizing = true;
+        cover.style.display = 'block';
+        disabledWrapper.disabled = true;
+
+        if (id.endsWith('--h')) {
+          resizeStart = e.clientX;
+          initialSize = iframe.clientWidth;
+          direction = 'x';
+        } else if (id.endsWith('--v')) {
+          resizeStart = e.clientY;
+          initialSize = iframe.clientHeight;
+          direction = 'y';
+        }
+      }
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (resizing) {
+        if (direction === 'x') {
+          delta = e.clientX - resizeStart;
+          totalX = Number(delta) + Number(initialSize);
+        } else if (direction === 'y') {
+          delta = e.clientY - resizeStart;
+          totalY = Number(delta) + Number(initialSize);
+        }
+        resize();
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (resizing) {
+        target.classList.toggle('pressed');
+        resizing = false;
+        disabledWrapper.disabled = false;
+        cover.style.display = 'none';
+      }
+    });
+
+    /**
+     * Resize the iFrame from the form
+     * @param {Event} e
+     */
+    function resizeFromForm(e) {
+      e.preventDefault();
+      const form = e.target.closest('#starchart-preview--controls');
+
+      const data = Object.fromEntries(new FormData(form));
+
+      if (data.width) {
+        const w = Number(data.width);
+        resize(w);
+      }
+    }
+
+    /**
+     * Resize the iFrame
+     * @param {number} [width] Width to resize to, defaults to total X
+     * @param {number} [height] Height to resize to, default to total Y
+     */
+    function resize(width = totalX, height = totalY) {
+      if (width < min) {
+        width = min;
+      } else if (width > maxX) {
+        width = maxX;
+      }
+
+      if (height < min) {
+        height = min;
+      } else if (height > maxY) {
+        height = maxY;
+      }
+
+      iframe.style.width = `${width}px`;
+      iframe.style.height = `${height}px`;
+
+      widthInput.value = Math.round(width);
+      heightInput.value = Math.round(height);
+    }
+  });
+</script>

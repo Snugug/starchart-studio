@@ -23,7 +23,7 @@
     ".": "./index.ts",
     "./Starchart": "./Starchart.ts",
     "./Starchart.astro": "./Starchart.astro",
-    "./components/*": "./starchart/*"
+    "./components/*": "./src/starchart/*"
   },
   "keywords": [],
   "author": "",
