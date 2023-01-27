@@ -140,18 +140,6 @@ const { chart } = Astro.props;
     const toggle = document.querySelector('#starchart-nav--toggle');
     const nav = document.querySelector('#starchart-nav');
 
-    if (window.localStorage) {
-      const expanded = window.localStorage.getItem('starchart-nav') === 'true';
-
-      if (expanded) {
-        nav.setAttribute('data-instant', 'true');
-        toggleNav();
-        requestAnimationFrame(() => {
-          nav.removeAttribute('data-instant');
-        });
-      }
-    }
-
     /**
      * Toggle the navigation open or closed
      */
@@ -162,9 +150,6 @@ const { chart } = Astro.props;
       const opposite = !expanded ? 'Show' : 'Hide';
       const label = toggle.getAttribute('aria-label').replace(opposite, action);
       toggle.setAttribute('aria-label', label);
-      if (window.localStorage) {
-        window.localStorage.setItem('starchart-nav', `${!expanded}`);
-      }
     }
 
     if (toggle) {
