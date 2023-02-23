@@ -17,30 +17,33 @@ const componentProps = props.props
   }, {});
 ---
 
-<Component {...componentProps} />
+<html>
+  <body>
+    <Component {...componentProps} />
+  </body>
+  <script define:vars={{ slug }}>
+    window.addEventListener(
+      'message',
+      (event) => {
+        if (event?.data?.from === 'starchart') {
+          window.dispatchEvent(
+            new CustomEvent('starchart:update', {
+              detail: {
+                component: slug.replace('__inline', ''),
+                props: event.data.props,
+              },
+            }),
+          );
+        }
+      },
+      false,
+    );
+  </script>
 
-<script define:vars={{ slug }}>
-  window.addEventListener(
-    'message',
-    (event) => {
-      if (event?.data?.from === 'starchart') {
-        window.dispatchEvent(
-          new CustomEvent('starchart:update', {
-            detail: {
-              component: slug.replace('__inline', ''),
-              props: event.data.props,
-            },
-          }),
-        );
-      }
-    },
-    false,
-  );
-</script>
-
-<style is:global>
-  body {
-    margin: 0;
-    background: var(--starchart-inline-background, #ffffff);
-  }
-</style>
+  <style is:global>
+    body {
+      margin: 0;
+      background: var(--starchart-inline-background, #ffffff);
+    }
+  </style>
+</html>
